@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.navisu.lib.antlr</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.antlr</package>
+                <package>org.antlr.analysis</package>
+                <package>org.antlr.codegen</package>
+                <package>org.antlr.grammar.v3</package>
+                <package>org.antlr.gunit</package>
+                <package>org.antlr.gunit.swingui</package>
+                <package>org.antlr.gunit.swingui.model</package>
+                <package>org.antlr.gunit.swingui.parsers</package>
+                <package>org.antlr.gunit.swingui.runner</package>
+                <package>org.antlr.misc</package>
+                <package>org.antlr.runtime</package>
+                <package>org.antlr.runtime.debug</package>
+                <package>org.antlr.runtime.misc</package>
+                <package>org.antlr.runtime.tree</package>
+                <package>org.antlr.tool</package>
+                <package>org.stringtemplate.v4</package>
+                <package>org.stringtemplate.v4.compiler</package>
+                <package>org.stringtemplate.v4.debug</package>
+                <package>org.stringtemplate.v4.gui</package>
+                <package>org.stringtemplate.v4.misc</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/antlr-3.4-complete-no-antlrv2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/antlr-3.4-complete-no-antlrv2.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

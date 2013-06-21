@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.navisu.nmea.devices
+OpenIDE-Module-Localizing-Bundle: org/navisu/nmea/devices/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

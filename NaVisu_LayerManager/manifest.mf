@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.navisu.layermanager
+OpenIDE-Module-Localizing-Bundle: org/navisu/layermanager/Bundle.properties
+OpenIDE-Module-Requires: org.openide.windows.WindowManager
+OpenIDE-Module-Specification-Version: 1.0
+

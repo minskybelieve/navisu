@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.navisu.lib.nmea</code-name-base>
+            <suite-component/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.navisu.lib.antlr</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
+            <public-packages>
+                <package>org.navisu.ais.controller.parser.handler</package>
+                <package>org.navisu.ais.controller.parser.handler.impl</package>
+                <package>org.navisu.ais.controller.parser.impl</package>
+                <package>org.navisu.ais.model</package>
+                <package>org.navisu.nmea.controller.parser.handler</package>
+                <package>org.navisu.nmea.controller.parser.handler.impl</package>
+                <package>org.navisu.nmea.controller.parser.impl</package>
+                <package>org.navisu.nmea.model</package>
+                <package>org.navisu.nmea.model.misc</package>
+                <package>org.navisu.nmeax</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/nmea.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nmea.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

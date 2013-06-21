@@ -1,0 +1,16 @@
+/* 
+    Document   : rectangle
+    Created on : 3 avr. 2013, 10:07:01
+    Author     : Serge
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#r1 {
+-fx-background-color: linear-gradient(to bottom, black 60%, #141414 60.1%, black 100%);
+}
+

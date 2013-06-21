@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.navisu.lib.javafx
+OpenIDE-Module-Localizing-Bundle: org/navisu/lib/javafx/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
