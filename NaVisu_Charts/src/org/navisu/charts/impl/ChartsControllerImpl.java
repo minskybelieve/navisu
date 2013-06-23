@@ -29,9 +29,11 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import javax.swing.SwingUtilities;
+import org.navisu.charts.ChartsControllerCUDServices;
 import org.navisu.charts.ChartsControllerServices;
 import org.navisu.charts.ChartsDataFileStore;
-import org.navisu.charts.events.ChartSelectedEvent;
+import org.navisu.charts.ChartsControllerEvents;
+import org.navisu.charts.ChartsControllerEvents.ChartsControllerEventsSubscribe;
 import org.navisu.charts.utilities.Utils;
 import org.navisu.charts.worldwind.layer.ChartTiledImageLayer;
 import org.navisu.charts.worldwind.layer.PolygonLayer;
@@ -39,7 +41,7 @@ import org.navisu.charts.worldwind.layer.datamodel.LayerType;
 import org.navisu.charts.worldwind.layer.datamodel.LayerTypeFactory;
 import org.navisu.charts.worldwind.render.PolygonFactory;
 import org.navisu.charts.worldwind.render.impl.Polygon;
-import org.navisu.core.impl.WorldWindManager;
+import org.navisu.core.WorldWindManagerServices;
 import org.navisu.kapparser.controller.parser.kap.KapParserFactory;
 import org.navisu.kapparser.model.KAP;
 import org.netbeans.api.progress.ProgressHandle;
@@ -47,6 +49,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -55,14 +58,18 @@ import org.openide.windows.OutputWriter;
  *
  * @author Thibault
  */
-@ServiceProvider(service = ChartsControllerServices.class)
-public class ChartsControllerImpl implements ChartSelectedEvent, ChartsControllerServices {
+@ServiceProviders(value={
+    @ServiceProvider(service=ChartsControllerServices.class),
+    @ServiceProvider(service= ChartsControllerCUDServices.class)
+})
+public class ChartsControllerImpl implements ChartsControllerServices, ChartsControllerCUDServices {
     
     protected InputOutput io;
     
     protected final Preferences preferences = Preferences.userNodeForPackage(ChartsControllerImpl.class);
     
-    protected WorldWindManager wwm = Lookup.getDefault().lookup(WorldWindManager.class);
+    protected final WorldWindManagerServices wwm = WorldWindManagerServices.lookup;
+    
     protected ChartsDataFileStore fileStore;
     
     protected PolygonLayer polygonLayer;
@@ -82,7 +89,7 @@ public class ChartsControllerImpl implements ChartSelectedEvent, ChartsControlle
         this.tiledLayerMap = new HashMap<>();
         
         this.polygonLayer = new PolygonLayer();
-        this.polygonLayer.subscribe(this);
+        this.polygonLayer.subscribe(this.createChartsControllerEvents());
         this.wwm.getWorldWindow().addSelectListener(this.polygonLayer);
         this.wwm.insertBeforeCompass(this.polygonLayer);
         
@@ -93,7 +100,7 @@ public class ChartsControllerImpl implements ChartSelectedEvent, ChartsControlle
         preferences.addPreferenceChangeListener(this.createPreferenceChangeListener());
     }
 
-    private PreferenceChangeListener createPreferenceChangeListener() {
+    protected PreferenceChangeListener createPreferenceChangeListener() {
         return new PreferenceChangeListener() {
 
             @Override
@@ -203,43 +210,45 @@ public class ChartsControllerImpl implements ChartSelectedEvent, ChartsControlle
         return PolygonFactory.factory.newPolygon(id, locations, isTiled);
     }
     
-    @Override
-    public void chartSelected(String id) {
-        
-        // if the chart has already been displayed
-        if(this.tiledLayerMap.containsKey(id)) {
-            
-            ChartTiledImageLayer tiledLayer = this.tiledLayerMap.get(id);
-            boolean newState = !tiledLayer.isVisible();
-            tiledLayer.setVisible(newState);
-            this.polygonLayer.getPolygon(id).setVisible(!newState);
-        }
-        // if the chart exists in the charts file store
-        else if(this.fileStore.existsInFileStore(id)) {
-            
-            Path layerPath = this.fileStore.findTilesLocation(id);
-            Path xml = Paths.get(layerPath.toFile().getAbsolutePath(), id + ".xml");
-            
-            try {
-                
-                LayerType tLayer = LayerTypeFactory.newInstance(xml);
-                ChartTiledImageLayer tiledLayer = new ChartTiledImageLayer(
-                    id, 
-                    tLayer.getNumLevels().getNumEmpty(), 
-                    tLayer.getNumLevels().getCount(), 
-                    tLayer.getFormatSuffix()
-                );
+    protected ChartsControllerEvents createChartsControllerEvents() {
+        return new ChartsControllerEvents() {
+            @Override
+            public void chartSelected(String id) {
 
-                this.wwm.insertBeforeCompass(tiledLayer);
-                this.tiledLayerMap.put(id, tiledLayer);
-                // update polygon
-                Polygon polygon = this.polygonLayer.getPolygon(id);
-                polygon.setVisible(false);
-                
-            } catch(RuntimeException ex) {
-                io.getErr().println(ex.getMessage());
+                // if the chart has already been displayed
+                if (tiledLayerMap.containsKey(id)) {
+
+                    ChartTiledImageLayer tiledLayer = tiledLayerMap.get(id);
+                    boolean newState = !tiledLayer.isVisible();
+                    tiledLayer.setVisible(newState);
+                    polygonLayer.getPolygon(id).setVisible(!newState);
+                } // if the chart exists in the charts file store
+                else if (fileStore.existsInFileStore(id)) {
+
+                    Path layerPath = fileStore.findTilesLocation(id);
+                    Path xml = Paths.get(layerPath.toFile().getAbsolutePath(), id + ".xml");
+
+                    try {
+
+                        LayerType tLayer = LayerTypeFactory.newInstance(xml);
+                        ChartTiledImageLayer tiledLayer = new ChartTiledImageLayer(
+                                id,
+                                tLayer.getNumLevels().getNumEmpty(),
+                                tLayer.getNumLevels().getCount(),
+                                tLayer.getFormatSuffix());
+
+                        wwm.insertBeforeCompass(tiledLayer);
+                        tiledLayerMap.put(id, tiledLayer);
+                        // update polygon
+                        Polygon polygon = polygonLayer.getPolygon(id);
+                        polygon.setVisible(false);
+
+                    } catch (RuntimeException ex) {
+                        io.getErr().println(ex.getMessage());
+                    }
+                }
             }
-        }
+        };
     }
 
     @Override
@@ -281,5 +290,25 @@ public class ChartsControllerImpl implements ChartSelectedEvent, ChartsControlle
         }
         
         return this.io.getOut();
+    }
+
+    @Override
+    public ChartsControllerEventsSubscribe getEventsSubscribe() {
+        return this.polygonLayer;
+    }
+
+    @Override
+    public void create(KAP chart) {
+        //TODO
+    }
+
+    @Override
+    public void update(KAP chart) {
+        //TODO
+    }
+
+    @Override
+    public void delete(KAP chart) {
+        //TODO
     }
 }
