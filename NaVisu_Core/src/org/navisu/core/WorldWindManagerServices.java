@@ -19,6 +19,7 @@ import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -51,4 +52,6 @@ public interface WorldWindManagerServices {
     
     void saveSessionState();
     void restoreSessionState();
+    
+    public static WorldWindManagerServices lookup = Lookup.getDefault().lookup(WorldWindManagerServices.class);
 }

@@ -60,7 +60,7 @@ public final class NaVisuTopComponent
     /**
      * The WorldWind Manager
      */
-    protected WorldWindManagerServices wwm = Lookup.getDefault().lookup(WorldWindManagerServices.class);
+    protected WorldWindManagerServices wwm = WorldWindManagerServices.lookup;
     /**
      * The WorldWindow
      *

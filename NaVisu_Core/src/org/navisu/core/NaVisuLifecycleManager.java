@@ -17,7 +17,7 @@ public class NaVisuLifecycleManager extends LifecycleManager {
     @Override
     public void exit() {
         // save the WorldWind session state
-        WorldWindManagerServices worldWindManager = Lookup.getDefault().lookup(WorldWindManagerServices.class);
+        WorldWindManagerServices worldWindManager = WorldWindManagerServices.lookup;
         worldWindManager.saveSessionState();
 
         // call others LifecycleManager to exit application
