@@ -22,18 +22,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.navisu.charts.ChartsControllerServices;
-import org.navisu.charts.events.ChartSelectedEvent;
+import org.navisu.charts.ChartsControllerEvents;
 import org.navisu.charts.worldwind.render.impl.Polygon;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Thibault
  */
-public class PolygonLayer extends RenderableLayer implements SelectListener, ChartSelectedEvent.ChartSelectedEventSubscribe {
+public class PolygonLayer extends RenderableLayer implements SelectListener, ChartsControllerEvents.ChartsControllerEventsSubscribe {
 
-    protected List<ChartSelectedEvent> observers;
+    protected List<ChartsControllerEvents> observers;
     protected Map<String, Polygon> polygonsMap;
     
     public PolygonLayer() {
@@ -73,20 +71,20 @@ public class PolygonLayer extends RenderableLayer implements SelectListener, Cha
         if(topObject instanceof Polygon) {
             
             Polygon selectedPolygon = (Polygon) topObject;
-            for(ChartSelectedEvent observer : this.observers) {
+            for(ChartsControllerEvents observer : this.observers) {
                 observer.chartSelected(selectedPolygon.getId());
             }
         }
     }
 
     @Override
-    public void subscribe(ChartSelectedEvent observer) {
+    public void subscribe(ChartsControllerEvents observer) {
         assert observer != null;
         this.observers.add(observer);
     }
 
     @Override
-    public void unsubscribe(ChartSelectedEvent observer) {
+    public void unsubscribe(ChartsControllerEvents observer) {
         assert observer != null;
         this.observers.remove(observer);
     }
@@ -95,7 +93,7 @@ public class PolygonLayer extends RenderableLayer implements SelectListener, Cha
     public void setOpacity(double d) {
         super.setOpacity(d);
         
-        Lookup.getDefault().lookup(ChartsControllerServices.class).getOut().println("Setting opactiy : " + d + " for " + this.polygonsMap.size() + " polygons");
+        //ChartsControllerServices.lookup.getOut().println("Setting opactiy : " + d + " for " + this.polygonsMap.size() + " polygons");
             
         for(Polygon p : this.polygonsMap.values()) {
             p.setOpacity(d);
