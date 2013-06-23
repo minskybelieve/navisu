@@ -25,7 +25,7 @@ import org.navisu.charts.worldwind.render.PolygonFactory;
  */
 public class PolygonFactoryImpl implements PolygonFactory {
  
-    protected double opacity = 0.08; // 0.15 modif Serge
+    protected double opacity = 1d; // 0.15 modif Serge
     protected double hightlightOpacity = 0.05;
     protected double outlineOpacity = 0.75;
     protected double noOpacity = 0.00001;
