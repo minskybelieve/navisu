@@ -45,7 +45,7 @@ public final class BulkDownloadTopComponent extends TopComponent {
         setName(Bundle.CTL_BulkDownloadTopComponent());
         setToolTipText(Bundle.HINT_BulkDownloadTopComponent());
 
-        this.bulkDownloadPanel = new  BulkDownloadPanel(Lookup.getDefault().lookup(WorldWindManagerServices.class).getWorldWindow());
+        this.bulkDownloadPanel = new  BulkDownloadPanel(WorldWindManagerServices.lookup.getWorldWindow());
         this.add(this.bulkDownloadPanel, BorderLayout.CENTER);
     }
 
