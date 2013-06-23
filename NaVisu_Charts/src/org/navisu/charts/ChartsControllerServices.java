@@ -16,11 +16,12 @@
 package org.navisu.charts;
 
 import java.util.prefs.Preferences;
+import org.openide.util.Lookup;
 import org.openide.windows.OutputWriter;
 
 /**
  *
- * @author tibus
+ * @author Thibault
  */
 public interface ChartsControllerServices {
     
@@ -38,4 +39,8 @@ public interface ChartsControllerServices {
     
     OutputWriter getErr();
     OutputWriter getOut();
+    
+    ChartsControllerEvents.ChartsControllerEventsSubscribe getEventsSubscribe();
+    
+    public static ChartsControllerServices lookup = Lookup.getDefault().lookup(ChartsControllerServices.class);
 }
