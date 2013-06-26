@@ -13,29 +13,20 @@
  * You should have received a copy of the GNU General Public License along with
  * NaVisu. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navisu.charts;
-
-import java.util.List;
-import org.navisu.charts.polygons.PolygonLayer;
-import org.navisu.charts.tiles.TilesFileStore;
-import org.navisu.kapparser.model.KAP;
-import org.openide.util.Lookup;
+package org.navisu.charts.parameters;
 
 /**
  *
  * @author Thibault
  */
-public interface ChartsControllerServices {
+public interface ListParameterEvents {
     
-    public static final ChartsControllerServices lookup = Lookup.getDefault().lookup(ChartsControllerServices.class);
+    void itemsAdded(String... items);
+    void itemsRemoved(String... items);
+    void itemsRemoved();
     
-    void addChartsLocation(String location);
-    void removeChartsLocation(String location);
-    void removeAll();
-    
-    TilesFileStore getTilesFileStore();
-    
-    PolygonLayer getPolygonLayer();
-    
-    List<KAP> getCharts();
+    public interface ListParameterEventsSubscribe {
+        void subscribe  (ListParameterEvents observer);
+        void unsubscribe(ListParameterEvents observer);
+    }
 }

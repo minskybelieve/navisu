@@ -105,12 +105,21 @@ public class Utils {
             }
         };
         
-        for(File file : rootPath.toFile().listFiles(filter)) {
-            if(!file.isDirectory()) {
-                files.add(file.toPath());
+        File rootFile = rootPath.toFile();
+        
+        if(rootFile != null) {
+            File[] listFiles = rootFile.listFiles(filter);
+            if(listFiles != null) {
+                for(File file : listFiles) {
+                    if(!file.isDirectory()) {
+                        files.add(file.toPath());
+                    }
+                }
             }
         }
-        
+        else {
+            System.err.println("NUUUUUUUUUUUUUUUUUULL");
+        }
         return files;
     }
     
@@ -180,7 +189,7 @@ public class Utils {
         }
     }
     
-    public static byte[] serialize(Object o) throws IOException {
+    /*public static byte[] serialize(Object o) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( baos );
         oos.writeObject(o);
@@ -192,7 +201,7 @@ public class Utils {
         ObjectInputStream ois = new ObjectInputStream( bais );
         Object o = ois.readObject();
         return o;
-    }
+    }*/
     
     private Utils() {}
 }

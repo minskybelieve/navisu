@@ -13,29 +13,26 @@
  * You should have received a copy of the GNU General Public License along with
  * NaVisu. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navisu.charts;
+package org.navisu.charts.polygons;
 
-import java.util.List;
-import org.navisu.charts.polygons.PolygonLayer;
-import org.navisu.charts.tiles.TilesFileStore;
-import org.navisu.kapparser.model.KAP;
-import org.openide.util.Lookup;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.render.Renderable;
 
 /**
  *
  * @author Thibault
  */
-public interface ChartsControllerServices {
+public interface Polygon {
     
-    public static final ChartsControllerServices lookup = Lookup.getDefault().lookup(ChartsControllerServices.class);
+    String getID();
     
-    void addChartsLocation(String location);
-    void removeChartsLocation(String location);
-    void removeAll();
+    Iterable<? extends LatLon> getLocations();
+    void setLocations(Iterable<? extends LatLon> locations);
     
-    TilesFileStore getTilesFileStore();
+    boolean isTiled();
     
-    PolygonLayer getPolygonLayer();
+    void    setVisible(boolean visible);
+    boolean isVisible();
     
-    List<KAP> getCharts();
+    Renderable getRenderable();
 }

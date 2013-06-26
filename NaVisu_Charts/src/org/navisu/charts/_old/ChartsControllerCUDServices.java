@@ -13,11 +13,8 @@
  * You should have received a copy of the GNU General Public License along with
  * NaVisu. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navisu.charts;
+package org.navisu.charts._old;
 
-import java.util.List;
-import org.navisu.charts.polygons.PolygonLayer;
-import org.navisu.charts.tiles.TilesFileStore;
 import org.navisu.kapparser.model.KAP;
 import org.openide.util.Lookup;
 
@@ -25,17 +22,11 @@ import org.openide.util.Lookup;
  *
  * @author Thibault
  */
-public interface ChartsControllerServices {
+public interface ChartsControllerCUDServices {
+   
+    void create(KAP chart);
+    void update(KAP chart);
+    void delete(KAP chart);
     
-    public static final ChartsControllerServices lookup = Lookup.getDefault().lookup(ChartsControllerServices.class);
-    
-    void addChartsLocation(String location);
-    void removeChartsLocation(String location);
-    void removeAll();
-    
-    TilesFileStore getTilesFileStore();
-    
-    PolygonLayer getPolygonLayer();
-    
-    List<KAP> getCharts();
+    public static final ChartsControllerCUDServices lookup = Lookup.getDefault().lookup(ChartsControllerCUDServices.class);
 }

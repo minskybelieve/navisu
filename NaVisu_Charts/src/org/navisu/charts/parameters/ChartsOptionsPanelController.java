@@ -17,9 +17,7 @@ package org.navisu.charts.parameters;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.prefs.Preferences;
 import javax.swing.JComponent;
-import org.navisu.charts.ChartsControllerServices;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -39,12 +37,6 @@ public final class ChartsOptionsPanelController extends OptionsPanelController {
     protected ChartsPanel panel;
     protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     protected boolean changed;
-
-    protected Preferences preferences = Lookup.getDefault().lookup(ChartsControllerServices.class).getPreferences();
-
-    public Preferences getPreferences() {
-        return preferences;
-    }
     
     @Override
     public void update() {
