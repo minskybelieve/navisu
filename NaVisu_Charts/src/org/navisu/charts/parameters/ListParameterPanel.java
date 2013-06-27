@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
@@ -38,8 +39,6 @@ public class ListParameterPanel extends JPanel implements ListParameterEventsSub
     
     public ListParameterPanel() {
         initComponents();
-        
-        System.getProperties().list(System.out);
         
         assert DefaultListModel.class.isAssignableFrom(this.list.getModel().getClass());
         
@@ -76,7 +75,7 @@ public class ListParameterPanel extends JPanel implements ListParameterEventsSub
 
         setLayout(new java.awt.BorderLayout());
 
-        buttonsPanel.setLayout(new java.awt.GridLayout());
+        buttonsPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         org.openide.awt.Mnemonics.setLocalizedText(addButton, org.openide.util.NbBundle.getMessage(ListParameterPanel.class, "ListParameterPanel.addButton.text")); // NOI18N
         addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -96,7 +95,6 @@ public class ListParameterPanel extends JPanel implements ListParameterEventsSub
         buttonsPanel.add(removeButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(clearButton, org.openide.util.NbBundle.getMessage(ListParameterPanel.class, "ListParameterPanel.clearButton.text")); // NOI18N
-        clearButton.setEnabled(false);
         clearButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearButtonActionPerformed(evt);
@@ -186,4 +184,8 @@ public class ListParameterPanel extends JPanel implements ListParameterEventsSub
     private javax.swing.JScrollPane listScrollPane;
     private javax.swing.JButton removeButton;
     // End of variables declaration//GEN-END:variables
+
+    public JButton getClearButton() {
+        return this.clearButton;
+    }
 }

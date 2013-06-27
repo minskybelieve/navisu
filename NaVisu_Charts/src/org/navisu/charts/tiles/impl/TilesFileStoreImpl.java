@@ -73,7 +73,7 @@ public class TilesFileStoreImpl implements TilesFileStore {
     @Override
     public String getTilesLocation(String chartID) {
         assert chartID != null;
-        // firstable, search in the map
+        // first of all, search in the map
         String location = this.tilesLocationMap.get(chartID);
         // if the location does not already exists in the map
         if(location == null) {

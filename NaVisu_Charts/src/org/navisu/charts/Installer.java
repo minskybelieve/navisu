@@ -16,11 +16,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void restored() {
         
-        this.chartsCtrl.addChartsLocation(defaultChartsLocation);
+        //this.chartsCtrl.addChartsLocation(defaultChartsLocation);
         this.chartsCtrl.getTilesFileStore().addTilesLocation(defaultTilesLocation);
-        
-        //this.chartsCtrl.addChartsPath(defaultChartsPath);
-        //this.chartsCtrl.addTilesLocation(defaultDataFileStore);
-        //this.chartsCtrl.reload();
     }
 }

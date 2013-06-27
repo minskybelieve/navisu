@@ -15,13 +15,9 @@
  */
 package org.navisu.charts.utilities;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,7 +30,7 @@ import java.util.logging.Logger;
  *
  * @author Thibault
  */
-public class Utils {
+public class CommonUtils {
     
     public static List<Path> listFilesRecursively(Path path, final String ext) {
         return listFilesRecursively(path.toAbsolutePath().toString(), ext);
@@ -145,7 +141,7 @@ public class Utils {
     }
     
     public static String fileExtension(Path filepath) {
-        return Utils.fileExtension(filepath.toFile());
+        return CommonUtils.fileExtension(filepath.toFile());
     }
     
     public static String fileExtension(File file) {
@@ -157,7 +153,7 @@ public class Utils {
     public static List<File> getFilesByExtension(Path filepath, String ext) {
         List<File> files = new ArrayList<>();
         for(File file : filepath.toFile().listFiles()) {
-            if(Utils.fileExtension(file.toPath()).toLowerCase().equals(ext)) {
+            if(CommonUtils.fileExtension(file.toPath()).toLowerCase().equals(ext)) {
                 files.add(file);
             }
         }
@@ -177,7 +173,7 @@ public class Utils {
         try {
             Files.deleteIfExists(path);
         } catch (IOException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommonUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -185,7 +181,7 @@ public class Utils {
         try {
             Thread.sleep(timeMillis);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommonUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -203,5 +199,5 @@ public class Utils {
         return o;
     }*/
     
-    private Utils() {}
+    private CommonUtils() {}
 }

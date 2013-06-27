@@ -16,13 +16,27 @@
 package org.navisu.charts.parameters;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.prefs.Preferences;
+import javax.swing.DefaultListModel;
+import org.navisu.charts.ChartsControllerServices;
+import org.navisu.charts.utilities.PreferencesUtils;
+import org.openide.util.NbPreferences;
 
 /**
  *
  * @author NaVisu
  */
 public final class ChartsPanel extends javax.swing.JPanel {
-
+    
+    protected final Preferences preferences = NbPreferences.forModule(ChartsPanel.class);
+    
+    public static final String CHARTS_LOC_PREF = "org.navisu.charts.parameters.charts.loc";
+    public static final String TILES_LOC_PREF = "org.navisu.charts.parameters.tiles.loc";
+    
     protected ListParameterPanel chartsLocationListParameterPanel;
     protected ListParameterPanel tilesLocationListParameterPanel;
     
@@ -31,43 +45,9 @@ public final class ChartsPanel extends javax.swing.JPanel {
         
         this.tilesLocationListParameterPanel = new ListParameterPanel();
         this.tilesLocationPanel.add(this.tilesLocationListParameterPanel, BorderLayout.CENTER);
-        this.tilesLocationListParameterPanel.subscribe(new ListParameterEvents() {
-
-            @Override
-            public void itemsAdded(String... items) {
-                
-            }
-
-            @Override
-            public void itemsRemoved(String... items) {
-            
-            }
-
-            @Override
-            public void itemsRemoved() {
-
-            }
-        });
         
         this.chartsLocationListParameterPanel = new ListParameterPanel();
         this.chartsLocationPanel.add(this.chartsLocationListParameterPanel, BorderLayout.CENTER);
-        this.chartsLocationListParameterPanel.subscribe(new ListParameterEvents() {
-
-            @Override
-            public void itemsAdded(String... items) {
-                System.out.println("itemsAdded(" + items.length + ")");
-            }
-
-            @Override
-            public void itemsRemoved(String... items) {
-                System.out.println("itemsRemoved(" + items.length + ")");
-            }
-
-            @Override
-            public void itemsRemoved() {
-                System.out.println("itemsRemoves()");
-            }
-        });
     }
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -88,13 +68,143 @@ public final class ChartsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     void load() {
-
+        
+        // hold the charts controller
+        ChartsControllerServices ctrl = ChartsControllerServices.lookup;
+        
+        DefaultListModel<String> model = this.chartsLocationListParameterPanel.model;
+        List<String> chartsLocationPref = PreferencesUtils.loadStringList(preferences, CHARTS_LOC_PREF);
+        model.clear();
+        
+        for(String pref : chartsLocationPref) {
+            model.addElement(pref);
+        }
+        
+        if(!ctrl.getChartsLocationList().isEmpty()) {
+            for(String ctrlLoc : ctrl.getChartsLocationList()) {
+                if(!model.contains(ctrlLoc)) {
+                    model.addElement(ctrlLoc);
+                }
+            }
+        }
+        
+        if(model.isEmpty()) {
+            this.chartsLocationListParameterPanel.getClearButton().setEnabled(false);
+        }
+        
+        model = this.tilesLocationListParameterPanel.model;
+        List<String> tilesLocationPref = PreferencesUtils.loadStringList(preferences, TILES_LOC_PREF);
+        model.clear();
+        
+        for(String pref : tilesLocationPref) {
+            model.addElement(pref);
+        }
+        
+        if(!ctrl.getTilesFileStore().getTilesLocationList().isEmpty()) {
+            for(String tilesLoc : ctrl.getTilesFileStore().getTilesLocationList()) {
+                if(!model.contains(tilesLoc)) {
+                    model.addElement(tilesLoc);
+                }
+            }
+        }
+        
+        if(model.isEmpty()) {
+            this.tilesLocationListParameterPanel.getClearButton().setEnabled(false);
+        }
     }
 
     void store() {
         
+        List<String> prefs = new ArrayList<>();
+        DefaultListModel<String> model = this.chartsLocationListParameterPanel.model;
+        
+        for(int i=0; i<model.getSize(); i++) {
+            prefs.add(model.elementAt(i));
+        }
+        
+        PreferencesUtils.storeList(preferences, CHARTS_LOC_PREF, prefs);
+        this.updateChartsLocation(prefs);
+        
+        prefs = new ArrayList<>();
+        
+        model = this.tilesLocationListParameterPanel.model;
+        
+        for(int i=0; i<model.getSize(); i++) {
+            prefs.add(model.elementAt(i));
+        }
+        
+        PreferencesUtils.storeList(preferences, TILES_LOC_PREF, prefs);
+    }
+    
+    protected void updateChartsLocation(List<String> prefs) {
+        // hold the charts controller
+        ChartsControllerServices ctrl = ChartsControllerServices.lookup;
+        
+        //---------------------------------------------------------------------------//
+        // [1] Update charts location
+        List<String> chartsLocListFromCtrl = ctrl.getChartsLocationList();
+        List<String> toRemove = getElmtsRemoved(chartsLocListFromCtrl, prefs);
+        List<String> toAdd = getElmtsAdded(chartsLocListFromCtrl, prefs);
+        
+        if(!toAdd.isEmpty()) {
+            ctrl.addChartsLocation(toAdd.toArray(new String[toAdd.size()]));
+        }
+        
+        if(!toRemove.isEmpty()) {
+            
+            if(toRemove.size() == chartsLocListFromCtrl.size()) {
+                ctrl.removeAll();
+            }
+            else {
+                ctrl.removeChartsLocation(toRemove.toArray(new String[toRemove.size()]));
+            }
+        }
+        //---------------------------------------------------------------------------//
     }
 
+    /**
+     * Return the list of elements which are in the refList and are not in the newList
+     * 
+     * @param refList
+     * @param newList
+     * @return 
+     */
+    public static List<String> getElmtsRemoved(List<String> refList, List<String> newList) {
+        
+        List<String> removed = new ArrayList<>(Math.max(refList.size(), newList.size()));
+        
+        for(String elmt : refList) {
+                
+            if(!newList.contains(elmt)) {
+                removed.add(elmt);
+            }
+        }
+        
+        return removed;
+    }
+    
+    
+    /**
+     * Return the list of elements which are in the newList and are not in the refList
+     * 
+     * @param refList
+     * @param newList
+     * @return 
+     */
+    public static List<String> getElmtsAdded(List<String> refList, List<String> newList) {
+        
+        List<String> added = new ArrayList<>(Math.max(refList.size(), newList.size()));
+        
+        for(String elmt : newList) {
+            
+            if(!refList.contains(elmt)) {
+                added.add(elmt);
+            }
+        }
+        
+        return added;
+    }
+    
     boolean valid() {
         boolean result = true;
 

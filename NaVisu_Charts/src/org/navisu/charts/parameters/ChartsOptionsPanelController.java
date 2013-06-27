@@ -17,12 +17,19 @@ package org.navisu.charts.parameters;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
+/**
+ * 
+ * @author Thibault
+ */
 @OptionsPanelController.SubRegistration(
         location = "NaVisu",
         displayName = "#AdvancedOption_DisplayName_Charts",

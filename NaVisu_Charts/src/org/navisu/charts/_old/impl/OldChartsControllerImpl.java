@@ -38,7 +38,7 @@ import org.navisu.charts._old.ChartsControllerEvents;
 import org.navisu.charts._old.ChartsControllerEvents.ChartsControllerEventsSubscribe;
 import static org.navisu.charts._old.ChartsControllerServices.KEY_CHARTS_PATH_PREF;
 import static org.navisu.charts._old.ChartsControllerServices.KEY_TILES_LOCATION_PREF;
-import org.navisu.charts.utilities.Utils;
+import org.navisu.charts.utilities.CommonUtils;
 import org.navisu.charts.tiles.impl.ChartTiledImageLayer;
 import org.navisu.charts._old.worldwind.layer.PolygonLayer;
 import org.navisu.charts.tiles.datamodel.LayerType;
@@ -178,13 +178,13 @@ public class OldChartsControllerImpl implements ChartsControllerServices, Charts
 
                     progressBar.progress("Loading charts from : " + chartsPath.toString());
                     List<Path> charts = readRecursively ? 
-                            Utils.listFilesRecursively(chartsPath, "kap") 
-                            : Utils.listFiles(chartsPath, "kap");
+                            CommonUtils.listFilesRecursively(chartsPath, "kap") 
+                            : CommonUtils.listFiles(chartsPath, "kap");
                     for(Path chart : charts) {
                         
                         try {
                             final KAP kap = KapParserFactory.factory.newBasicKapParser(chart).parse();
-                            String id = Utils.fileNameWithoutExt(chart);
+                            String id = CommonUtils.fileNameWithoutExt(chart);
 
                             final Polygon polygon = createPolygon(id, kap);
                             if(polygon != null) {

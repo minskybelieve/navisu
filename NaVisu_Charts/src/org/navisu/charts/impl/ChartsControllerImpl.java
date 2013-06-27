@@ -21,6 +21,7 @@ import gov.nasa.worldwind.render.SurfacePolygon;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,14 @@ import org.navisu.charts.tiles.TilesFileStore;
 import org.navisu.charts.tiles.datamodel.LayerType;
 import org.navisu.charts.tiles.datamodel.LayerTypeFactory;
 import org.navisu.charts.tiles.impl.TilesFileStoreImpl;
-import org.navisu.charts.utilities.Utils;
+import org.navisu.charts.utilities.CommonUtils;
 import org.navisu.core.WorldWindManagerServices;
 import org.navisu.kapparser.controller.parser.kap.KapParserFactory;
 import org.navisu.kapparser.model.KAP;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 
 /**
  *
@@ -77,27 +79,31 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     }
     
     @Override
-    public void addChartsLocation(final String location) {
-        this.chartsLocationList.add(location);
+    public void addChartsLocation(final String... locations) {
+        
+        getErr().println("adding " + locations.length + " charts locations");
+        this.chartsLocationList.addAll(Arrays.asList(locations));
         
         Executors.newSingleThreadExecutor().execute(new Runnable() {
 
             @Override
             public void run() {
-                ChartsControllerImpl.this.addChartsLocationSafe(location);
+                for(String loc : locations) {
+                    ChartsControllerImpl.this.addChartsLocationSafe(loc);
+                }
             } 
         });
     }
     
     protected void addChartsLocationSafe(String location) {
         
-        List<Path> chartPathList = Utils.listFilesRecursively(location, "kap");
+        List<Path> chartPathList = CommonUtils.listFilesRecursively(location, "kap");
         for(Path chartPath : chartPathList) {
             
             try {
                 
                 final KAP kap = KapParserFactory.factory.newBasicKapParser(chartPath).parse();
-                String id = Utils.fileNameWithoutExt(chartPath);
+                String id = CommonUtils.fileNameWithoutExt(chartPath);
                 
                 final Polygon polygon = this.createPolygon(id, kap);
                 if(polygon != null) {
@@ -137,8 +143,11 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     }
     
     @Override
-    public void removeChartsLocation(String location) {
-        this.chartsLocationList.remove(location);
+    public void removeChartsLocation(String... locations) {
+        
+        getErr().println("removing " + locations.length + " charts locations");
+        this.chartsLocationList.removeAll(Arrays.asList(locations));
+        //TODO !
     }
 
     @Override
@@ -150,6 +159,11 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
         }
         this.tiledImageLayerMap.clear();
         this.wwm.getWorldWindow().redraw();
+    }
+
+    @Override
+    public List<String> getChartsLocationList() {
+        return chartsLocationList;
     }
 
     @Override
@@ -194,5 +208,15 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     @Override
     public List<KAP> getCharts() {
         return this.chartList;
+    }
+
+    @Override
+    public OutputWriter getOut() {
+        return this.io.getOut();
+    }
+
+    @Override
+    public OutputWriter getErr() {
+        return this.io.getErr();
     }
 }
