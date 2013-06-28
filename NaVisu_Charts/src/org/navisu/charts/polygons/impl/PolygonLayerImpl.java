@@ -60,9 +60,14 @@ public class PolygonLayerImpl implements PolygonLayer, SelectListener {
 
     @Override
     public void removePolygon(String id) {
-        final Polygon polygonToRemove = this.polygons.get(id);
-        this.layer.removeRenderable(polygonToRemove.getRenderable());
-        this.polygons.remove(id);
+        if(this.polygons.containsKey(id)) {
+            final Polygon polygonToRemove = this.polygons.get(id);
+
+            if(polygonToRemove.getRenderable() != null) {
+                this.layer.removeRenderable(polygonToRemove.getRenderable());
+                this.polygons.remove(id);
+            }
+        }
     }
 
     @Override

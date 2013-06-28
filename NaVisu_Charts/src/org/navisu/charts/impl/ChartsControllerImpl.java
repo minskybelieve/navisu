@@ -62,6 +62,7 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     protected PolygonLayer polygonLayer;
     protected List<KAP> chartList;
     protected Map<String, ChartTiledImageLayer> tiledImageLayerMap;
+    protected Map<String, List<String>> chartsLocationForIDsMap;
     
     public ChartsControllerImpl() {
         
@@ -76,12 +77,13 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
         
         this.chartList = new ArrayList<>();
         this.tiledImageLayerMap = new HashMap<>();
+        this.chartsLocationForIDsMap = new HashMap<>();
     }
     
     @Override
     public void addChartsLocation(final String... locations) {
         
-        getErr().println("adding " + locations.length + " charts locations");
+        getErr().println("[DEBUG] adding " + locations.length + " charts locations");
         this.chartsLocationList.addAll(Arrays.asList(locations));
         
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -118,6 +120,14 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
                     });
                 }
                 
+                // fill the charts location for IDs map
+                List<String> IDsList = this.chartsLocationForIDsMap.get(location);
+                if(IDsList == null) {
+                    IDsList = new ArrayList<>();
+                    this.chartsLocationForIDsMap.put(location, IDsList);
+                }
+                IDsList.add(id);
+                
             } catch(Exception ex) {
                 //TODO 
             }
@@ -143,22 +153,77 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     }
     
     @Override
-    public void removeChartsLocation(String... locations) {
+    public void removeChartsLocation(final String... locations) {
         
-        getErr().println("removing " + locations.length + " charts locations");
+        getErr().println("[DEBUG] removing " + locations.length + " charts locations");
         this.chartsLocationList.removeAll(Arrays.asList(locations));
-        //TODO !
+        
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                for(String loc : locations) {
+                    ChartsControllerImpl.this.removeChartsLocationSafe(loc);
+                }
+            } 
+        });
+    }
+    
+    protected void removeChartsLocationSafe(String location) {
+        
+        final List<String> IDsList = this.chartsLocationForIDsMap.get(location);
+        if(IDsList != null) {
+            
+            for(String chartID : IDsList) {
+                
+                this.polygonLayer.removePolygon(chartID);
+                final ChartTiledImageLayer tiledImageLayer = this.tiledImageLayerMap.get(chartID);
+                if(tiledImageLayer != null) {
+                    this.wwm.getLayers().remove(tiledImageLayer);
+                    this.tiledImageLayerMap.remove(chartID);
+                }
+            }
+            
+            this.chartsLocationForIDsMap.remove(location);
+            
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    wwm.getWorldWindow().redraw();
+                }
+            });
+        }
     }
 
     @Override
     public void removeAll() {
-        this.chartsLocationList.clear();
-        this.polygonLayer.removeAll();
-        for(ChartTiledImageLayer tiledImageLayer : this.tiledImageLayerMap.values()) {
-            this.wwm.getLayers().remove(tiledImageLayer);
-        }
-        this.tiledImageLayerMap.clear();
-        this.wwm.getWorldWindow().redraw();
+        
+        getErr().println("[DEBUG] removing all charts locations");
+        
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            
+            @Override
+            public void run() {
+                
+                chartsLocationList.clear();
+                polygonLayer.removeAll();
+                
+                for (final ChartTiledImageLayer tiledImageLayer : tiledImageLayerMap.values()) {
+                    
+                    SwingUtilities.invokeLater(new Runnable() {
+                        
+                        @Override
+                        public void run() {
+                            wwm.getLayers().remove(tiledImageLayer);
+                            wwm.getWorldWindow().redraw();
+                        }
+                    });
+                }
+                tiledImageLayerMap.clear();
+                chartsLocationForIDsMap.clear();
+            }
+        });
     }
 
     @Override
@@ -168,7 +233,7 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
 
     @Override
     public void selected(Polygon polygon) {
-        
+
         final String id = polygon.getID();
         
         io.getOut().println("selected(" + id + ")");
