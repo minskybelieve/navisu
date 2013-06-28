@@ -1,6 +1,5 @@
 package org.navisu.core;
 
-import org.navisu.core.impl.WorldWindManager;
 import java.util.Collection;
 import java.util.Iterator;
 import org.openide.LifecycleManager;

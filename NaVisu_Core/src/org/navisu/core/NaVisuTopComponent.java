@@ -15,7 +15,6 @@
  */
 package org.navisu.core;
 
-import org.navisu.core.impl.WorldWindManager;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.TerrainProfileLayer;
@@ -27,7 +26,6 @@ import org.navisu.core.utilities.OpenStreetMapLayer;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
