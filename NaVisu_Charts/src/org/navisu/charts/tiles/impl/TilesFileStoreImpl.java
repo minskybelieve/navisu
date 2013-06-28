@@ -101,29 +101,33 @@ public class TilesFileStoreImpl implements TilesFileStore {
     
     @Override
     public void addTilesLocation(String... locations) {
-        assert locations != null && locations.length > 0;
+        assert locations != null;
         
         for(String location : locations) {
             this.wwFileStore.addLocation(location, true);
             this.tilesLocationList.add(location);
         }
         
-        for(TilesFileStoreEvents obs : this.observers) {
-            obs.tilesFileStoreChanged();
+        if(locations.length > 0) {
+            for(TilesFileStoreEvents obs : this.observers) {
+                obs.tilesFileStoreChanged();
+            }
         }
     }
 
     @Override
     public void removeTilesLocation(String... locations) {
-        assert locations != null && locations.length > 0;
+        assert locations != null;
         
         for(String location : locations) {
             this.wwFileStore.removeLocation(location);
             this.tilesLocationList.remove(location);
         }
         
-        for(TilesFileStoreEvents obs : this.observers) {
-            obs.tilesFileStoreChanged();
+        if(locations.length > 0) {
+            for(TilesFileStoreEvents obs : this.observers) {
+                obs.tilesFileStoreChanged();
+            }
         }
     }
 
@@ -134,11 +138,13 @@ public class TilesFileStoreImpl implements TilesFileStore {
             this.wwFileStore.removeLocation(location);
         }
         
-        this.tilesLocationList.clear();
-        
-        for(TilesFileStoreEvents obs : this.observers) {
-            obs.tilesFileStoreChanged();
+        if(this.tilesLocationList.size() > 0) {
+            for(TilesFileStoreEvents obs : this.observers) {
+                obs.tilesFileStoreChanged();
+            }
         }
+        
+        this.tilesLocationList.clear();
     }
 
     @Override
