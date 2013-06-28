@@ -41,6 +41,8 @@ import org.navisu.charts.tiles.datamodel.LayerTypeFactory;
 import org.navisu.charts.tiles.impl.TilesFileStoreImpl;
 import org.navisu.charts.utilities.CommonUtils;
 import org.navisu.core.WorldWindManagerServices;
+import org.navisu.core.progressbar.ProgressBar;
+import org.navisu.core.progressbar.ProgressBarFactory;
 import org.navisu.kapparser.controller.parser.kap.KapParserFactory;
 import org.navisu.kapparser.model.KAP;
 import org.openide.util.lookup.ServiceProvider;
@@ -120,6 +122,9 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
 
             @Override
             public void run() {
+                
+                
+                
                 for(String loc : locations) {
                     ChartsControllerImpl.this.addChartsLocationSafe(loc);
                 }
@@ -129,8 +134,15 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     
     protected void addChartsLocationSafe(String location) {
         
+        final ProgressBar progressBar = ProgressBarFactory.factory.createProgressBar("Loading charts from " + location);
+        
         List<Path> chartPathList = CommonUtils.listFilesRecursively(location, "kap");
+        progressBar.start(chartPathList.size());
+        
+        int i = 0;
         for(Path chartPath : chartPathList) {
+            
+            progressBar.progress("Loading charts from " + chartPath.toString(), i++);
             
             try {
                 
@@ -162,6 +174,8 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
                 //TODO 
             }
         }
+        
+        progressBar.finish();
     }
 
     protected Polygon createPolygon(String id, KAP chart) {
