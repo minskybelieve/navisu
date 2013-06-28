@@ -30,6 +30,7 @@ public interface Polygon {
     void setLocations(Iterable<? extends LatLon> locations);
     
     boolean isTiled();
+    void setTiled(boolean isTiled);
     
     void    setVisible(boolean visible);
     boolean isVisible();

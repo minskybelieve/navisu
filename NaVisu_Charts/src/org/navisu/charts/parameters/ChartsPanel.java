@@ -17,12 +17,11 @@ package org.navisu.charts.parameters;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.prefs.Preferences;
 import javax.swing.DefaultListModel;
 import org.navisu.charts.ChartsControllerServices;
+import org.navisu.charts.tiles.TilesFileStore;
 import org.navisu.charts.utilities.PreferenceUtils;
 import org.openide.util.NbPreferences;
 
@@ -134,14 +133,13 @@ public final class ChartsPanel extends javax.swing.JPanel {
         }
         
         PreferenceUtils.storeList(preferences, TILES_LOC_PREF, prefs);
+        this.updateTilesLocation(prefs);
     }
     
     protected void updateChartsLocation(List<String> prefs) {
         // hold the charts controller
         ChartsControllerServices ctrl = ChartsControllerServices.lookup;
         
-        //---------------------------------------------------------------------------//
-        // [1] Update charts location
         List<String> chartsLocListFromCtrl = ctrl.getChartsLocationList();
         List<String> toRemove = getElmtsRemoved(chartsLocListFromCtrl, prefs);
         List<String> toAdd = getElmtsAdded(chartsLocListFromCtrl, prefs);
@@ -159,9 +157,31 @@ public final class ChartsPanel extends javax.swing.JPanel {
                 ctrl.removeChartsLocation(toRemove.toArray(new String[toRemove.size()]));
             }
         }
-        //---------------------------------------------------------------------------//
     }
 
+    private void updateTilesLocation(List<String> prefs) {
+        // hold the tiles file store
+        TilesFileStore store = ChartsControllerServices.lookup.getTilesFileStore();
+        
+        List<String> tilesLocationList = store.getTilesLocationList();
+        List<String> toRemove = getElmtsRemoved(tilesLocationList, prefs);
+        List<String> toAdd = getElmtsAdded(tilesLocationList, prefs);
+        
+        if(!toAdd.isEmpty()) {
+            store.addTilesLocation(toAdd.toArray(new String[toAdd.size()]));
+        }
+        
+        if(!toRemove.isEmpty()) {
+            
+            if(toRemove.size() == tilesLocationList.size()) {
+                store.removeAll();
+            }
+            else {
+                store.removeTilesLocation(toRemove.toArray(new String[toRemove.size()]));
+            }
+        }
+    }
+    
     /**
      * Return the list of elements which are in the refList and are not in the newList
      * 

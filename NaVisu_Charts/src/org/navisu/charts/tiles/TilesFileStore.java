@@ -16,19 +16,22 @@
 package org.navisu.charts.tiles;
 
 import java.util.List;
+import org.navisu.charts.tiles.TilesFileStoreEvents.TilesFileStoreEventsSubscribe;
 
 /**
  *
  * @author Thibault
  */
-public interface TilesFileStore {
+public interface TilesFileStore extends TilesFileStoreEventsSubscribe {
     
     String findInFileStore(String chartID);
     String getTilesLocation(String chartID);
     boolean existsInTilesFileStore(String chartID);
     
-    void addTilesLocation(String location);
-    void removeTilesLocation(String location);
+    void addTilesLocation(String... location);
+    void removeTilesLocation(String... location);
+    void removeAll();
+    
     List<String> getTilesLocationList();
     List<String> getDefaultTilesLocation();
 }

@@ -76,6 +76,12 @@ public class PolygonImpl implements Polygon {
     }
 
     @Override
+    public void setTiled(boolean isTiled) {
+        this.isTiled = isTiled;
+        this.renderable.getAttributes().setOutlineMaterial(isTiled ? Material.GREEN : Material.RED);
+    }
+    
+    @Override
     public void setVisible(boolean visible) {
         this.renderable.setVisible(visible);
     }

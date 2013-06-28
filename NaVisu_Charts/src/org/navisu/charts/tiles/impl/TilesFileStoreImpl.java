@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.navisu.charts.tiles.TilesFileStore;
+import org.navisu.charts.tiles.TilesFileStoreEvents;
 
 /**
  *
@@ -39,10 +40,14 @@ public class TilesFileStoreImpl implements TilesFileStore {
     /** (to comment) */
     protected List<String> tilesLocationList;
     
+    /** */
+    protected List<TilesFileStoreEvents> observers;
+    
     public TilesFileStoreImpl(FileStore wwFileStore) {
         this.wwFileStore = wwFileStore;
         this.tilesLocationMap = new HashMap<>();
         this.tilesLocationList = new ArrayList<>();
+        this.observers = new ArrayList<>();
     }
     
     @Override
@@ -95,17 +100,45 @@ public class TilesFileStoreImpl implements TilesFileStore {
     }
     
     @Override
-    public void addTilesLocation(String location) {
-        assert location != null && !location.isEmpty();
-        this.wwFileStore.addLocation(location, true);
-        this.tilesLocationList.add(location);
+    public void addTilesLocation(String... locations) {
+        assert locations != null && locations.length > 0;
+        
+        for(String location : locations) {
+            this.wwFileStore.addLocation(location, true);
+            this.tilesLocationList.add(location);
+        }
+        
+        for(TilesFileStoreEvents obs : this.observers) {
+            obs.tilesFileStoreChanged();
+        }
     }
 
     @Override
-    public void removeTilesLocation(String location) {
-        assert location != null;
-        this.wwFileStore.removeLocation(location);
-        this.tilesLocationList.remove(location);
+    public void removeTilesLocation(String... locations) {
+        assert locations != null && locations.length > 0;
+        
+        for(String location : locations) {
+            this.wwFileStore.removeLocation(location);
+            this.tilesLocationList.remove(location);
+        }
+        
+        for(TilesFileStoreEvents obs : this.observers) {
+            obs.tilesFileStoreChanged();
+        }
+    }
+
+    @Override
+    public void removeAll() {
+        
+        for(String location : this.tilesLocationList) {
+            this.wwFileStore.removeLocation(location);
+        }
+        
+        this.tilesLocationList.clear();
+        
+        for(TilesFileStoreEvents obs : this.observers) {
+            obs.tilesFileStoreChanged();
+        }
     }
 
     @Override
@@ -128,5 +161,15 @@ public class TilesFileStoreImpl implements TilesFileStore {
         }
         
         return defaultLocationList;
+    }
+
+    @Override
+    public void subscribe(TilesFileStoreEvents observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void unsubscribe(TilesFileStoreEvents observer) {
+        this.observers.remove(observer);
     }
 }

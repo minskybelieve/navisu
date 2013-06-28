@@ -35,6 +35,7 @@ import org.navisu.charts.polygons.PolygonLayer;
 import org.navisu.charts.polygons.impl.PolygonImpl;
 import org.navisu.charts.polygons.impl.PolygonLayerImpl;
 import org.navisu.charts.tiles.TilesFileStore;
+import org.navisu.charts.tiles.TilesFileStoreEvents;
 import org.navisu.charts.tiles.datamodel.LayerType;
 import org.navisu.charts.tiles.datamodel.LayerTypeFactory;
 import org.navisu.charts.tiles.impl.TilesFileStoreImpl;
@@ -66,18 +67,47 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     
     public ChartsControllerImpl() {
         
+        // initialize containers
         this.chartsLocationList = new ArrayList<>();
-        this.tilesFileStore = new TilesFileStoreImpl(WorldWind.getDataFileStore());
+        this.chartList = new ArrayList<>();
+        this.tiledImageLayerMap = new HashMap<>();
+        this.chartsLocationForIDsMap = new HashMap<>();
         
+        // Initialize the polygons layer
         this.polygonLayer = new PolygonLayerImpl();
         this.polygonLayer.subscribe(this);
         this.polygonLayer.setPolygonType(SurfacePolygon.class);
         this.wwm.getWorldWindow().addSelectListener(this.polygonLayer.getSelectListener());
         this.wwm.insertBeforeCompass(this.polygonLayer.getLayer());
         
-        this.chartList = new ArrayList<>();
-        this.tiledImageLayerMap = new HashMap<>();
-        this.chartsLocationForIDsMap = new HashMap<>();
+        // initialize the tiles file store and subscribe to its events
+        this.tilesFileStore = new TilesFileStoreImpl(WorldWind.getDataFileStore());
+        this.tilesFileStore.subscribe(this.createTilesFileStoreEvents(this.chartsLocationForIDsMap, this.tilesFileStore, this.polygonLayer));
+    }
+    
+    protected TilesFileStoreEvents createTilesFileStoreEvents(
+            final Map<String, List<String>> locForIDsMap, 
+            final TilesFileStore tilesFileStore,
+            final PolygonLayer polygonLayer) {
+        
+        return new TilesFileStoreEvents() {
+
+            @Override
+            public void tilesFileStoreChanged() {
+                
+                for(List<String> IDsList : locForIDsMap.values()) { // for each list of IDs
+                    for(String id : IDsList) { // for each id
+                        
+                        boolean isTiled = tilesFileStore.existsInTilesFileStore(id);
+                        Polygon polygon = polygonLayer.getPolygon(id);
+                        // make sure the polygon exists in the polygon layer 
+                        if(polygon != null) {
+                            polygon.setTiled(isTiled);
+                        }
+                    }
+                }
+            }
+        };
     }
     
     @Override
@@ -235,8 +265,6 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     public void selected(Polygon polygon) {
 
         final String id = polygon.getID();
-        
-        io.getOut().println("selected(" + id + ")");
         
         if(this.tiledImageLayerMap.containsKey(id)) {
             
