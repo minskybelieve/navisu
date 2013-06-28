@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 import javax.swing.DefaultListModel;
 import org.navisu.charts.ChartsControllerServices;
-import org.navisu.charts.utilities.PreferencesUtils;
+import org.navisu.charts.utilities.PreferenceUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -73,7 +73,7 @@ public final class ChartsPanel extends javax.swing.JPanel {
         ChartsControllerServices ctrl = ChartsControllerServices.lookup;
         
         DefaultListModel<String> model = this.chartsLocationListParameterPanel.model;
-        List<String> chartsLocationPref = PreferencesUtils.loadStringList(preferences, CHARTS_LOC_PREF);
+        List<String> chartsLocationPref = PreferenceUtils.loadStringList(preferences, CHARTS_LOC_PREF);
         model.clear();
         
         for(String pref : chartsLocationPref) {
@@ -93,7 +93,7 @@ public final class ChartsPanel extends javax.swing.JPanel {
         }
         
         model = this.tilesLocationListParameterPanel.model;
-        List<String> tilesLocationPref = PreferencesUtils.loadStringList(preferences, TILES_LOC_PREF);
+        List<String> tilesLocationPref = PreferenceUtils.loadStringList(preferences, TILES_LOC_PREF);
         model.clear();
         
         for(String pref : tilesLocationPref) {
@@ -122,7 +122,7 @@ public final class ChartsPanel extends javax.swing.JPanel {
             prefs.add(model.elementAt(i));
         }
         
-        PreferencesUtils.storeList(preferences, CHARTS_LOC_PREF, prefs);
+        PreferenceUtils.storeList(preferences, CHARTS_LOC_PREF, prefs);
         this.updateChartsLocation(prefs);
         
         prefs = new ArrayList<>();
@@ -133,7 +133,7 @@ public final class ChartsPanel extends javax.swing.JPanel {
             prefs.add(model.elementAt(i));
         }
         
-        PreferencesUtils.storeList(preferences, TILES_LOC_PREF, prefs);
+        PreferenceUtils.storeList(preferences, TILES_LOC_PREF, prefs);
     }
     
     protected void updateChartsLocation(List<String> prefs) {

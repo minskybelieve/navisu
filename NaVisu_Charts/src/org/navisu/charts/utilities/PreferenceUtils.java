@@ -23,7 +23,7 @@ import java.util.prefs.Preferences;
  *
  * @author Thibault
  */
-public class PreferencesUtils {
+public class PreferenceUtils {
     
     public static final String LIST_SEPARATOR = ";";
     
