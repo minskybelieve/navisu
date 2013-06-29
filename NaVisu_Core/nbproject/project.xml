@@ -94,6 +94,7 @@
                 <package>org.navisu.core</package>
                 <package>org.navisu.core.actions</package>
                 <package>org.navisu.core.console</package>
+                <package>org.navisu.core.lookup</package>
                 <package>org.navisu.core.progressbar</package>
                 <package>org.navisu.core.utilities</package>
                 <package>org.navisu.core.utilities.renderables</package>
