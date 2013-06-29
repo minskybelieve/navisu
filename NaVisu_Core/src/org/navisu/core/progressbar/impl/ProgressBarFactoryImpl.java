@@ -22,7 +22,7 @@ import org.navisu.core.progressbar.ProgressBarFactory;
  *
  * @author Thibault
  */
-public class ProgressBarFactoryNBImpl implements ProgressBarFactory {
+public class ProgressBarFactoryImpl implements ProgressBarFactory {
 
     @Override
     public ProgressBar createProgressBar(String title) {

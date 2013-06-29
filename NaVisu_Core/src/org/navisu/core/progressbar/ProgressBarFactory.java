@@ -15,7 +15,7 @@
  */
 package org.navisu.core.progressbar;
 
-import org.navisu.core.progressbar.impl.ProgressBarFactoryNBImpl;
+import org.navisu.core.progressbar.impl.ProgressBarFactoryImpl;
 
 /**
  *
@@ -25,5 +25,5 @@ public interface ProgressBarFactory {
     
     ProgressBar createProgressBar(String title);
     
-    public static final ProgressBarFactory factory = new ProgressBarFactoryNBImpl();
+    public static final ProgressBarFactory factory = new ProgressBarFactoryImpl();
 }
