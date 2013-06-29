@@ -16,12 +16,11 @@
 package org.navisu.charts;
 
 import java.util.List;
-import java.util.prefs.Preferences;
 import org.navisu.charts.polygons.PolygonLayer;
 import org.navisu.charts.tiles.TilesFileStore;
+import org.navisu.core.console.Console;
 import org.navisu.kapparser.model.KAP;
 import org.openide.util.Lookup;
-import org.openide.windows.OutputWriter;
 
 /**
  *
@@ -42,6 +41,5 @@ public interface ChartsControllerServices {
     
     List<KAP> getCharts();
     
-    OutputWriter getOut();
-    OutputWriter getErr();
+    Console getConsole();
 }

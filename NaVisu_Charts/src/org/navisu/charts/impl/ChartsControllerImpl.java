@@ -41,14 +41,13 @@ import org.navisu.charts.tiles.datamodel.LayerTypeFactory;
 import org.navisu.charts.tiles.impl.TilesFileStoreImpl;
 import org.navisu.charts.utilities.CommonUtils;
 import org.navisu.core.WorldWindManagerServices;
+import org.navisu.core.console.Console;
+import org.navisu.core.console.ConsoleFactory;
 import org.navisu.core.progressbar.ProgressBar;
 import org.navisu.core.progressbar.ProgressBarFactory;
 import org.navisu.kapparser.controller.parser.kap.KapParserFactory;
 import org.navisu.kapparser.model.KAP;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.IOProvider;
-import org.openide.windows.InputOutput;
-import org.openide.windows.OutputWriter;
 
 /**
  *
@@ -57,7 +56,8 @@ import org.openide.windows.OutputWriter;
 @ServiceProvider(service = ChartsControllerServices.class)
 public class ChartsControllerImpl implements ChartsControllerServices, PolygonEvent {
     
-    protected final InputOutput io = IOProvider.getDefault().getIO("Charts", true);
+    //protected final InputOutput io = IOProvider.getDefault().getIO("Charts", true);
+    protected final Console console = ConsoleFactory.factory.getConsole("Charts");
     
     protected List<String> chartsLocationList;
     protected WorldWindManagerServices wwm = WorldWindManagerServices.lookup;
@@ -115,7 +115,8 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     @Override
     public void addChartsLocation(final String... locations) {
         
-        getErr().println("[DEBUG] adding " + locations.length + " charts locations");
+        this.console.getOut().println("[DEBUG] adding " + locations.length + " charts locations");
+        
         this.chartsLocationList.addAll(Arrays.asList(locations));
         
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -199,7 +200,7 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     @Override
     public void removeChartsLocation(final String... locations) {
         
-        getErr().println("[DEBUG] removing " + locations.length + " charts locations");
+        this.console.getOut().println("[INFO] Removing " + locations.length + " charts locations");
         this.chartsLocationList.removeAll(Arrays.asList(locations));
         
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -243,7 +244,7 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     @Override
     public void removeAll() {
         
-        getErr().println("[DEBUG] removing all charts locations");
+        this.console.getOut().println("[INFO] Removing all charts");
         
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             
@@ -318,12 +319,7 @@ public class ChartsControllerImpl implements ChartsControllerServices, PolygonEv
     }
 
     @Override
-    public OutputWriter getOut() {
-        return this.io.getOut();
-    }
-
-    @Override
-    public OutputWriter getErr() {
-        return this.io.getErr();
+    public Console getConsole() {
+        return this.console;
     }
 }
