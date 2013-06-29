@@ -19,8 +19,8 @@ import java.util.List;
 import org.navisu.charts.polygons.PolygonLayer;
 import org.navisu.charts.tiles.TilesFileStore;
 import org.navisu.core.console.Console;
+import org.navisu.core.lookup.LookupFactory;
 import org.navisu.kapparser.model.KAP;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -28,7 +28,7 @@ import org.openide.util.Lookup;
  */
 public interface ChartsControllerServices {
     
-    public static final ChartsControllerServices lookup = Lookup.getDefault().lookup(ChartsControllerServices.class);
+    public static final ChartsControllerServices lookup = LookupFactory.factory.lookup(ChartsControllerServices.class);
     
     void addChartsLocation(String... location);
     void removeChartsLocation(String... location);
